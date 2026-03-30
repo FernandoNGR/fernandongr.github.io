@@ -1,12 +1,379 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SF Crime Analysis</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Crime Data Story</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: #1e293b;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-2: #38bdf8;
+      --border: rgba(255,255,255,0.08);
+      --maxw: 980px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0%, #111827 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a {
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(92%, var(--maxw));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 72px 0 48px;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(circle at top right, rgba(56,189,248,0.13), transparent 28%),
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 24%);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.08;
+      margin: 0 0 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      font-size: 1.12rem;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 0 26px;
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #052e16;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .content {
+      padding: 42px 0 72px;
+    }
+
+    .story-intro,
+    .section,
+    .figure-card,
+    .closing {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .story-intro,
+    .section,
+    .closing {
+      padding: 28px;
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      font-size: 1.7rem;
+      line-height: 1.2;
+      margin: 0 0 14px;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 0 0 12px;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .figure-card {
+      padding: 18px;
+      margin: 22px 0 30px;
+      overflow: hidden;
+    }
+
+    .figure-frame {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      background: #fff;
+      display: block;
+    }
+
+    .figure-frame.tall {
+      height: 650px;
+    }
+
+    .figure-frame.medium {
+      height: 560px;
+    }
+
+    .static-image {
+      width: 100%;
+      border-radius: 16px;
+      display: block;
+      background: #fff;
+    }
+
+    .caption {
+      margin-top: 14px;
+      padding: 14px 4px 4px;
+      color: var(--muted);
+      font-size: 0.98rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .caption strong {
+      color: var(--text);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .footer {
+      padding: 28px 0 48px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (min-width: 900px) {
+      .two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .story-intro,
+      .section,
+      .closing {
+        padding: 34px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>SF Crime Analysis</h1>
-    <p>This site contains interactive visualizations of crime patterns in San Francisco.</p>
+
+  <header class="hero">
+    <div class="container">
+      <div class="eyebrow">Social Data Analysis · Assignment 2</div>
+      <h1>San Francisco Crime Changes by Time and Place</h1>
+      <p class="subtitle">
+        This short data story explores how crime patterns in San Francisco shift across hours,
+        years, and neighborhoods. The goal is not just to show where crime appears, but to
+        explain how different visualizations reveal different parts of the same story.
+      </p>
+      <div class="hero-links">
+        <a class="btn btn-primary" href="#story">Read the story</a>
+        <a class="btn btn-secondary" href="#fig1">Jump to first figure</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="container">
+
+      <section class="story-intro" id="story">
+        <h2>Introduction</h2>
+        <p>
+          San Francisco crime data contains both temporal and spatial structure. Some crimes
+          cluster at particular times of day, while others are concentrated in certain districts
+          or hotspots. Looking at just one chart often hides that complexity. In this story, I use
+          three visualizations to show how crime changes across time and space, and how the
+          choice of visualization shapes what becomes visible.
+        </p>
+        <p class="muted">
+          Replace this intro with your real story. Keep it simple and human. Do not write like a robot.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>1. Start with the long-term pattern</h2>
+        <p>
+          Begin with your static chart. This should establish the main pattern the reader needs
+          before moving into the map and interactive figure. A static figure is good when you
+          want to communicate one clear message without asking the reader to explore.
+        </p>
+
+        <article class="figure-card" id="fig1">
+          <h3>Figure 1. Long-term trend in the chosen crime pattern</h3>
+
+          <!-- Replace images/static_chart.png with your real file -->
+          <img
+            class="static-image"
+            src="images/static_chart.png"
+            alt="Static chart showing the long-term crime trend"
+          />
+
+          <div class="caption">
+            <strong>Caption:</strong> Replace this with a real caption. Tell the reader what the
+            chart shows and what they should notice. For example: “This chart shows that the
+            selected crime type rises sharply before 2020 and then drops during the COVID period,
+            suggesting that broader social and enforcement changes affected the recorded pattern.”
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>2. Add geography with a map</h2>
+        <p>
+          The map should answer a different question than the first figure. Instead of repeating
+          the same pattern, use the map to show where the story happens. A choropleth, heatmap,
+          or scatter map works well here depending on whether you want district-level summaries
+          or point-level density.
+        </p>
+
+        <article class="figure-card" id="fig2">
+          <h3>Figure 2. Geographic concentration of the pattern</h3>
+
+          <!-- Replace visualizations/crime_map.html with your real exported map -->
+          <iframe
+            class="figure-frame medium"
+            src="visualizations/crime_map.html"
+            title="Crime map">
+          </iframe>
+
+          <div class="caption">
+            <strong>Caption:</strong> Replace this with your real interpretation. Example:
+            “The map shows that the pattern is not evenly distributed across the city. Some
+            districts remain close to the city average, while others stand out clearly, making
+            the spatial concentration easier to see than in a table or bar chart.”
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>3. Let the reader explore the finer detail</h2>
+        <p>
+          End with the interactive Plotly chart. This is where you can give the reader some
+          freedom after you have already guided them through the main argument. The chart
+          should add something new rather than just repeat the first two figures.
+        </p>
+
+        <article class="figure-card" id="fig3">
+          <h3>Figure 3. Interactive comparison across hours or years</h3>
+
+          <!-- Replace visualizations/interactive_plot.html with your real Plotly export -->
+          <iframe
+            class="figure-frame tall"
+            src="visualizations/interactive_plot.html"
+            title="Interactive Plotly visualization">
+          </iframe>
+
+          <div class="caption">
+            <strong>Caption:</strong> Replace this with your own caption. Example:
+            “This interactive chart allows the reader to compare hourly patterns across crime
+            types and years. Hovering, zooming, and toggling traces makes it easier to see
+            which patterns are stable and which changed over time.”
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Why these three figures work together</h2>
+        <div class="two-col">
+          <div>
+            <p>
+              The first figure should establish the main claim. The second should show where the
+              pattern appears. The third should let the reader inspect the details for themselves.
+              That gives you a clean author-driven structure with a little reader freedom at the end.
+            </p>
+          </div>
+          <div>
+            <p>
+              Keep the color palette and tone consistent across all three figures. If one figure is
+              bright neon, one is grayscale, and one is default Plotly blue, the page will feel messy.
+              Visual consistency is one of the fastest ways to make the site look professional.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing">
+        <h2>Conclusion</h2>
+        <p>
+          This is where your final takeaway goes. Keep it short. State what the reader should
+          remember after scrolling through the page. Also be honest about limitations: crime data
+          can reflect enforcement and reporting patterns, not just underlying crime itself.
+        </p>
+        <p class="muted">
+          Optional: add references here if you use outside sources to explain a spike, drop, or hotspot.
+        </p>
+      </section>
+
+      <footer class="footer">
+        Created by Fernando · SF Crime Data Story
+      </footer>
+
+    </div>
+  </main>
 </body>
 </html>
